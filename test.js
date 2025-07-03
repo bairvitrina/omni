@@ -62,31 +62,38 @@ $(function() {/**
     }
 
 
-    const $prioritySelect = $('#priority-select');
-    const $createButton = $('.case_update_button'); // Кнопка "СОЗДАТЬ"
-    const $delayButton = $('.alpha3_btn_delay'); // Кнопка отложенной отправки
-    
-    // Функция для обновления состояния всех кнопок
-    function updateButtonsState() {
-        const isPriorityEmpty = ($prioritySelect.val() === '');
+    // 1. Добавляем звездочку к label "Приоритет"
+    const $priorityLabel = $('label.rlt.select-lbl.case-priority-colorful span.lbl');
+    if ($priorityLabel.length && !$priorityLabel.find('.star').length) {
+        $priorityLabel.prepend('<span class="star">*</span>');
+        $('head').append('<style>.star { color: #f00; margin-right: 3px; }</style>');
+    }
+
+    // 2. Функция проверки приоритета и управления кнопками
+    function checkPriority() {
+        const isPrioritySelected = $('#priority-select').val() !== '';
         
         // Блокируем/разблокируем кнопки
-        $createButton.prop('disabled', isPriorityEmpty).toggleClass('disabled', isPriorityEmpty);
-        $delayButton
-            .toggleClass('disabled', isPriorityEmpty)
-            .css('pointer-events', isPriorityEmpty ? 'none' : 'unset')
-            .attr('title', isPriorityEmpty ? 'Сначала выберите приоритет' : 'Запланировать отправку (Shift+Ctrl+Enter)');
+        $('.case_update_button, .alpha3_btn_delay')
+            .prop('disabled', !isPrioritySelected)
+            .toggleClass('disabled', !isPrioritySelected);
+        
+        // Для ссылки (не button) дополнительно меняем pointer-events
+        $('.alpha3_btn_delay').css('pointer-events', isPrioritySelected ? 'auto' : 'none');
+        
+        // Подсветка поля если не выбрано
+        $('label.case-priority-colorful').toggleClass('error-field', !isPrioritySelected);
     }
+
+    // 3. Проверяем при загрузке страницы
+    checkPriority();
     
-    // Инициализация при загрузке
-    updateButtonsState();
+    // 4. Вешаем обработчик на изменение приоритета
+    $('#priority-select').on('change', checkPriority);
     
-    // Обновляем при изменении выбора
-    $prioritySelect.on('change', updateButtonsState);
-    
-    // Если используется Chosen (дополнительная проверка)
-    if ($prioritySelect.data('chosen')) {
-        $prioritySelect.on('chosen:updated', updateButtonsState);
+    // 5. Для Chosen (если используется)
+    if ($('#priority-select').data('chosen')) {
+        $('#priority-select').on('chosen:updated', checkPriority);
     }
     
 });
