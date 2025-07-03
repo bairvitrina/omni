@@ -18,23 +18,20 @@ $(function() {/**
 
 
     const $prioritySelect = $('#priority-select');
-    const $saveButton = $('.case_update_button');
+    const $saveButton = $('.case_update_button'); // Кнопка "СОХРАНИТЬ"
     
+    // Функция для проверки выбранного значения
     function updateSaveButtonState() {
-        const isPriorityEmpty = ($prioritySelect.val() === '');
-        $saveButton.prop('disabled', isPriorityEmpty).toggleClass('disabled', isPriorityEmpty);
+        if ($prioritySelect.val() === '') {
+            $saveButton.prop('disabled', true).addClass('disabled'); // Блокируем кнопку
+        } else {
+            $saveButton.prop('disabled', false).removeClass('disabled'); // Разблокируем
+        }
     }
     
-    // Инициализация (если Chosen уже загружен)
+    // Проверяем при загрузке страницы
     updateSaveButtonState();
-    $prioritySelect.on('change', updateSaveButtonState);
     
-    // Если Chosen подгружается динамически
-    const observer = new MutationObserver(function() {
-        if ($prioritySelect.data('chosen')) {
-            updateSaveButtonState();
-            $prioritySelect.on('change', updateSaveButtonState); // Переподписываемся
-        }
-    });
-    observer.observe($prioritySelect[0], { attributes: true });
+    // Проверяем при изменении выбора
+    $prioritySelect.on('change', updateSaveButtonState);
 });
