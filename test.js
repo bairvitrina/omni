@@ -14,7 +14,26 @@ $(function() {/**
     /**
      * Таким образом можно менять и добавлять любые кнопки, формы и код на странице обращения.
      */
-
+    const $select = $('#priority-select');
+    if (!$select.length) return;
+    
+    // Добавляем "Не выбран" только если такой опции нет
+    if (!$select.find('option[value=""]').length) {
+        $select.prepend('<option value="" selected>Не выбран</option>');
+    }
+    
+    // Обновляем Chosen, если он есть
+    if ($select.data('chosen')) {
+        $select.trigger('chosen:updated');
+    } else {
+        // Если Chosen появится позже — отслеживаем
+        new MutationObserver(() => {
+            if ($select.data('chosen')) {
+                $select.trigger('chosen:updated');
+                this.disconnect();
+            }
+        }).observe($select[0], { attributes: true });
+    }
 
 
     const $prioritySelect = $('#priority-select');
