@@ -14,6 +14,8 @@ $(function() {/**
     /**
      * Таким образом можно менять и добавлять любые кнопки, формы и код на странице обращения.
      */
+
+
     const $select = $('#priority-select');
     if (!$select.length) return;
     
@@ -53,4 +55,5 @@ $(function() {/**
     
     // Проверяем при изменении выбора
     $prioritySelect.on('change', updateSaveButtonState);
+    
 });
