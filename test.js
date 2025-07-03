@@ -63,10 +63,11 @@ $(function() {/**
 
 
     // 1. Добавляем звездочку к label "Приоритет"
-    const $priorityLabel = $('label.rlt.select-lbl.case-priority-colorful span.lbl');
-    if ($priorityLabel.length && !$priorityLabel.find('.star').length) {
-        $priorityLabel.prepend('<span class="star">*</span>');
-        $('head').append('<style>.star { color: #f00; margin-right: 3px; }</style>');
+   if ($priorityLabel.length && !$priorityLabel.find('.star').length) {
+        $priorityLabel.html(function(_, html) {
+            // Вставляем звездочку после "Приоритет", но перед shortcut
+            return html.replace('Приоритет', 'Приоритет<span class="star">*</span>');
+        });
     }
 
     // 2. Функция проверки приоритета и управления кнопками
