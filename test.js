@@ -89,7 +89,9 @@ $(function() {/**
     checkPriority();
     
     // 4. Вешаем обработчик на изменение приоритета
-    $('#priority-select').on('change', checkPriority);
+    $(document).on('click keyup change input', function() {
+        checkPriority();
+    });;
     
     // 5. Для Chosen (если используется)
     if ($('#priority-select').data('chosen')) {
