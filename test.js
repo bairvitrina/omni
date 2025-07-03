@@ -63,7 +63,7 @@ $(function() {/**
 
 
     // 1. Добавляем звездочку к label "Приоритет"
-   if ($priorityLabel.length && !$priorityLabel.find('.star').length) {
+    if ($priorityLabel.length && !$priorityLabel.find('.star').length) {
         $priorityLabel.html(function(_, html) {
             // Вставляем звездочку после "Приоритет", но перед shortcut
             return html.replace('Приоритет', 'Приоритет<span class="star">*</span>');
