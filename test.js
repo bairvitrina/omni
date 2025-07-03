@@ -14,4 +14,27 @@ $(function() {/**
     /**
      * Таким образом можно менять и добавлять любые кнопки, формы и код на странице обращения.
      */
+
+
+
+    const $prioritySelect = $('#priority-select');
+    const $saveButton = $('.case_update_button');
+    
+    function updateSaveButtonState() {
+        const isPriorityEmpty = ($prioritySelect.val() === '');
+        $saveButton.prop('disabled', isPriorityEmpty).toggleClass('disabled', isPriorityEmpty);
+    }
+    
+    // Инициализация (если Chosen уже загружен)
+    updateSaveButtonState();
+    $prioritySelect.on('change', updateSaveButtonState);
+    
+    // Если Chosen подгружается динамически
+    const observer = new MutationObserver(function() {
+        if ($prioritySelect.data('chosen')) {
+            updateSaveButtonState();
+            $prioritySelect.on('change', updateSaveButtonState); // Переподписываемся
+        }
+    });
+    observer.observe($prioritySelect[0], { attributes: true });
 });
