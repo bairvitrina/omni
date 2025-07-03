@@ -14,6 +14,30 @@ $(function() {/**
     /**
      * Таким образом можно менять и добавлять любые кнопки, формы и код на странице обращения.
      */
+     // Находим элемент с классом .lbl внутри label для приоритета
+    const $priorityLabel = $('label.rlt.select-lbl.case-priority-colorful span.lbl');
+    
+    // Добавляем span со звездочкой после текста "Приоритет" (но перед shortcut)
+    if ($priorityLabel.length && !$priorityLabel.find('.star').length) {
+        $priorityLabel.html(function(_, html) {
+            // Вставляем звездочку после "Приоритет", но перед shortcut
+            return html.replace('Приоритет', 'Приоритет<span class="star">*</span>');
+        });
+    }
+    
+    // Добавляем стили для звездочки (если их еще нет)
+    if (!$('style:contains(".star")').length) {
+        $('head').append('<style>.star { color: #f00; margin-left: 3px; }</style>');
+    }
+
+
+
+
+
+
+
+
+
 
 
     const $select = $('#priority-select');
@@ -39,21 +63,30 @@ $(function() {/**
 
 
     const $prioritySelect = $('#priority-select');
-    const $saveButton = $('.case_update_button'); // Кнопка "СОХРАНИТЬ"
+    const $createButton = $('.case_update_button'); // Кнопка "СОЗДАТЬ"
+    const $delayButton = $('.alpha3_btn_delay'); // Кнопка отложенной отправки
     
-    // Функция для проверки выбранного значения
-    function updateSaveButtonState() {
-        if ($prioritySelect.val() === '') {
-            $saveButton.prop('disabled', true).addClass('disabled'); // Блокируем кнопку
-        } else {
-            $saveButton.prop('disabled', false).removeClass('disabled'); // Разблокируем
-        }
+    // Функция для обновления состояния всех кнопок
+    function updateButtonsState() {
+        const isPriorityEmpty = ($prioritySelect.val() === '');
+        
+        // Блокируем/разблокируем кнопки
+        $createButton.prop('disabled', isPriorityEmpty).toggleClass('disabled', isPriorityEmpty);
+        $delayButton
+            .toggleClass('disabled', isPriorityEmpty)
+            .css('pointer-events', isPriorityEmpty ? 'none' : 'unset')
+            .attr('title', isPriorityEmpty ? 'Сначала выберите приоритет' : 'Запланировать отправку (Shift+Ctrl+Enter)');
     }
     
-    // Проверяем при загрузке страницы
-    updateSaveButtonState();
+    // Инициализация при загрузке
+    updateButtonsState();
     
-    // Проверяем при изменении выбора
-    $prioritySelect.on('change', updateSaveButtonState);
+    // Обновляем при изменении выбора
+    $prioritySelect.on('change', updateButtonsState);
+    
+    // Если используется Chosen (дополнительная проверка)
+    if ($prioritySelect.data('chosen')) {
+        $prioritySelect.on('chosen:updated', updateButtonsState);
+    }
     
 });
